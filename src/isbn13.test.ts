@@ -1,19 +1,20 @@
 import { isValid } from "./isbn13";
 
 describe("isValid", () => {
-  test.each([
-    ["9783161484100", true], // korrekt
-    ["9780306406157", true], // korrekt
-    ["9781861972712", true], // korrekt
-    ["9783161484101", false], // falsche Prüfziffer
-    ["1234567890123", false], // falsche Prüfziffer
-  ])("isValid('%s') === %s", (isbn, expected) => {
-    expect(isValid(isbn)).toBe(expected);
+  test("valid ISBN-13 examples", () => {
+    expect(isValid("9783161484100")).toBe(true);  // gültig
+    expect(isValid("9780306406157")).toBe(true);  // gültig
+    expect(isValid("9781861972712")).toBe(true);  // gültig
   });
 
-  test("throws error on invalid ISBN (non-digits or wrong length)", () => {
-    expect(() => isValid("97831614841AB")).toThrow("Invalid ISBN-13");
-    expect(() => isValid("97831614")).toThrow("Invalid ISBN-13");
-    expect(() => isValid("")).toThrow("Invalid ISBN-13");
+  test("invalid ISBNs with wrong check digit", () => {
+    expect(isValid("9783161484101")).toBe(false); // letzte Ziffer falsch
+    expect(isValid("1234567890123")).toBe(false); // falsche Prüfziffer
+  });
+
+  test("throws error for invalid input format", () => {
+    expect(() => isValid("97831614841AB")).toThrow("Invalid ISBN-13"); // Buchstaben
+    expect(() => isValid("97831614")).toThrow("Invalid ISBN-13");      // zu kurz
+    expect(() => isValid("")).toThrow("Invalid ISBN-13");              // leer
   });
 });

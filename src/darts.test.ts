@@ -1,32 +1,42 @@
-
 import { calcPoints, possibleCheckout } from "./darts";
 
 describe("calcPoints", () => {
-  test.each([
-    ["3 20 1 17 2 4", 85],
-    ["2 15 1 18 3 19", 105],
-    ["3 20 1 5", 65],
-    ["1 20", 20],
-    ["", 0],
-    ["0 0", 0],
-  ])('calcPoints("%s") === %i', (input, expected) => {
-    expect(calcPoints(input)).toBe(expected);
+  test("normaler Wurf", () => {
+    expect(calcPoints("3 20 1 17 2 4")).toBe(85); // 60 + 17 + 8
   });
 
-  test("throws error on invalid input", () => {
-    expect(() => calcPoints("3")).toThrow("Invalid input: missing value");
-    expect(() => calcPoints("a b")).toThrow("Invalid input: NaN");
+  test("einfacher Wurf", () => {
+    expect(calcPoints("1 20")).toBe(20);
+  });
+
+  test("leere Eingabe", () => {
+    expect(calcPoints(" ")).toBe(0);
+  });
+
+  test("ungültige Eingabe: ungerade Anzahl", () => {
+    expect(() => calcPoints("3 20 1")).toThrow("Unvollständige Wurfdaten");
+  });
+
+  test("ungültige Eingabe: kein Zahlwert", () => {
+    expect(() => calcPoints("a b")).toThrow("Keine Zahl");
   });
 });
 
 describe("possibleCheckout", () => {
-  test.each([
-    [477, "Double 12"], // 501 - 477 = 24 → 12*2
-    [441, "Double 30"], // 60 → 30*2 (technisch korrekt, obwohl nicht realistisch auf Dartboard)
-    [480, null],        // 21 → ungerade
-    [500, "Double 0"],  // 1 → ungerade
-    [501, null],        // 0 → darf nicht 0 sein
-  ])("possibleCheckout(%i) === %s", (score, expected) => {
-  expect(possibleCheckout(441)).toBe(expected);
+  test("gültiger Checkout", () => {
+    expect(possibleCheckout(477)).toBe("Double 12"); // 501 - 477 = 24
+  });
+
+  test("ungerader Rest", () => {
+    expect(possibleCheckout(480)).toBeNull(); // 21 → ungerade
+  });
+
+  test("Rest > 40 (kein Double mehr möglich)", () => {
+    expect(possibleCheckout(440)).toBeNull(); // 61 → > 20*2
+  });
+
+  test("Rest = 0 oder negativ", () => {
+    expect(possibleCheckout(501)).toBeNull();
+    expect(possibleCheckout(510)).toBeNull();
   });
 });

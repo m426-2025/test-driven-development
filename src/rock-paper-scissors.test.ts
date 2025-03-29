@@ -1,24 +1,32 @@
 import { play } from "./rock-paper-scissors";
 
 describe("play", () => {
-  test.each([
-    ["rock", "scissors", 1],
-    ["paper", "rock", 1],
-    ["scissors", "paper", 1],
-    ["scissors", "rock", 2],
-    ["rock", "paper", 2],
-    ["paper", "scissors", 2],
-    ["rock", "rock", 0],
-    ["paper", "paper", 0],
-    ["scissors", "scissors", 0],
-    [" Rock ", "  PAPER ", 2],
-    ["SCISSORS", "rock", 2],
-  ])('play("%s", "%s") === %d', (p1, p2, expected) => {
-    expect(play(p1, p2)).toBe(expected);
+  test("player 1 wins", () => {
+    expect(play("rock", "scissors")).toBe(1);
+    expect(play("paper", "rock")).toBe(1);
+    expect(play("scissors", "paper")).toBe(1);
   });
 
-  test("throws error on invalid move", () => {
+  test("player 2 wins", () => {
+    expect(play("scissors", "rock")).toBe(2);
+    expect(play("rock", "paper")).toBe(2);
+    expect(play("paper", "scissors")).toBe(2);
+  });
+
+  test("draw", () => {
+    expect(play("rock", "rock")).toBe(0);
+    expect(play("paper", "paper")).toBe(0);
+    expect(play("scissors", "scissors")).toBe(0);
+  });
+
+  test("ignores case and whitespace", () => {
+    expect(play(" Rock ", "SCISSORS")).toBe(1);
+    expect(play(" paper", "rock ")).toBe(1);
+    expect(play("SCISSORS", " Paper ")).toBe(1);
+  });
+
+  test("throws on invalid moves", () => {
     expect(() => play("banana", "rock")).toThrow("Invalid move: banana");
-    expect(() => play("rock", "fire")).toThrow("Invalid move: fire");
+    expect(() => play("rock", "dragon")).toThrow("Invalid move: dragon");
   });
 });

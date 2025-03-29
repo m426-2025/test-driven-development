@@ -1,20 +1,21 @@
+// Berechnet die Punkte einer Runde Darts basierend auf "multiplikator sektor ..."
 export function calcPoints(hits: string): number {
-  if (hits.trim() === "") return 0;
+  if (!hits.trim()) return 0;
 
-  const tokens = hits.trim().split(/\s+/);
+  const parts = hits.trim().split(/\s+/);
 
-  if (tokens.length % 2 !== 0) {
-    throw new Error("Invalid input: missing value");
+  if (parts.length % 2 !== 0) {
+    throw new Error("Ungültige Eingabe: Unvollständige Wurfdaten");
   }
 
   let total = 0;
 
-  for (let i = 0; i < tokens.length; i += 2) {
-    const multiplier = Number(tokens[i]);
-    const sector = Number(tokens[i + 1]);
+  for (let i = 0; i < parts.length; i += 2) {
+    const multiplier = Number(parts[i]);
+    const sector = Number(parts[i + 1]);
 
     if (isNaN(multiplier) || isNaN(sector)) {
-      throw new Error("Invalid input: NaN");
+      throw new Error("Ungültige Eingabe: Keine Zahl");
     }
 
     total += multiplier * sector;
@@ -23,15 +24,15 @@ export function calcPoints(hits: string): number {
   return total;
 }
 
+// Gibt einen Double Checkout Wurf zurück oder null
 export function possibleCheckout(currentScore: number): string | null {
-  const remaining = 501 - currentScore;
+  const rest = 501 - currentScore;
 
-  if (remaining <= 0) return null;
-  if (remaining % 2 !== 0) return null;
+  if (rest <= 0 || rest % 2 !== 0) return null;
 
-  const sector = remaining / 2;
+  const sector = rest / 2;
 
-  if (sector > 20) return null;
+  if (sector < 1 || sector > 20) return null;
 
   return `Double ${sector}`;
 }

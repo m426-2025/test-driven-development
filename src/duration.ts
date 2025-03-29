@@ -3,15 +3,16 @@ export function formatDuration(seconds: number): string {
     throw new Error("Negative duration not allowed");
   }
 
-  const totalSeconds = Math.round(seconds);
-  const h = Math.floor(totalSeconds / 3600);
-  const m = Math.floor((totalSeconds % 3600) / 60);
-  const s = totalSeconds % 60;
+  const rounded = Math.round(seconds);          // Sekunden runden
+  const hours = Math.floor(rounded / 3600);     // Ganze Stunden
+  const minutes = Math.floor((rounded % 3600) / 60); // Minuten (Rest aus Stunden)
+  const secs = rounded % 60;                    // Verbleibende Sekunden
 
   let result = "";
-  if (h > 0) result += `${h}h`;
-  if (m > 0) result += `${m}m`;
-  if (s > 0 || result === "") result += `${s}s`;
+
+  if (hours > 0) result += `${hours}h`;
+  if (minutes > 0) result += `${minutes}m`;
+  if (secs > 0 || result === "") result += `${secs}s`; // Immer mindestens s anzeigen
 
   return result;
 }
